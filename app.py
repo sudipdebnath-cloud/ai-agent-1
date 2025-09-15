@@ -1,10 +1,10 @@
 import os
 import time
+import io
 import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 from streamlit_mic_recorder import mic_recorder
-import tempfile
 
 # ------------------ Setup ------------------
 load_dotenv()
@@ -169,19 +169,18 @@ if audio and audio.get("bytes"):
     if st.session_state.last_audio_id != audio_id:
         st.session_state.last_audio_id = audio_id
 
-        # Save audio
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-            f.write(audio["bytes"])
-            audio_path = f.name
+        # Convert audio bytes to in-memory file (no tempfile needed)
+        audio_file = io.BytesIO(audio["bytes"])
+        audio_file.name = "speech.wav"  # OpenAI expects a filename
 
         # Transcribe
-        with open(audio_path, "rb") as f:
-            transcript = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=f
-            )
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
         text = transcript.text
 
         st.session_state.messages.append({"role": "user", "content": text})
         render_conversation()
         stream_reply()
+
