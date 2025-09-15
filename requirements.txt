@@ -1,0 +1,9 @@
+streamlit
+openai
+python-dotenv
+streamlit-webrtc
+soundfile
+av
+audio-recorder-streamlit
+streamlit-mic-recorder
+pyperclip
