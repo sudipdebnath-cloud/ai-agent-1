@@ -8,7 +8,7 @@ from streamlit_mic_recorder import mic_recorder
 
 # ------------------ Setup ------------------
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     st.error("❌ OPENAI_API_KEY not found. Add it to .env (local) or Streamlit Secrets (cloud).")
     st.stop()
